@@ -13,7 +13,8 @@ try {
 		"user_info" => [
 			"name" => null,
 			"profile_picture" => null,
-			"profile_url" => null
+			"profile_url" => null,
+			"extended_info" => []
 		],
 		"user_posts" => []
 	];
@@ -34,14 +35,19 @@ try {
 	// 		break;
 	// }
 
-	$out = $fb->go("https://mobile.facebook.com/{$user_}?v=timeline", [CURLOPT_FOLLOWLOCATION => true]);
+	$out = $fb->go("https://m.facebook.com/{$user_}?v=timeline", [CURLOPT_FOLLOWLOCATION => true]);
 	$out["out"] = gzdecode($out["out"]);
+	
 	$url = explode("?", $out["info"]["url"], 2);
 	$url = str_replace(["https://mobile.", "https://m."], "https://www.", $url[0]);
 	$data["user_info"]["profile_url"] = $url;
+	
 	// print $out["out"];die;
 	// $out["out"] = file_get_contents("a.tmp");
 	
+	/**
+	 * Get name.
+	 */
 	if (preg_match(
 		"/(?:<title>)(.*)(?:<\/title>)/Usi",
 		$out["out"],
@@ -50,6 +56,9 @@ try {
 		$data["user_info"]["name"] = trim(fe($m[1]));
 	}
 
+	/**
+	 * Get posts.
+	 */
 	if (preg_match_all(
 		"/(?:<table class=\"ba\" role=\"presentation\">)(.+)(?:<abbr>)/Usi",
 		$out["out"],
@@ -226,13 +235,18 @@ try {
 		}
 	}
 
+	unset($tmp, $mv, $text, $fbid, $h3, $out, $photoUrl, $caption, $alt);
+
+	/**
+	 * Get profile picture.
+	 */
 	if (preg_match(
 		"/(?: width=\"320\" height=\"200\".+<a href=\")(.*)(?:\")/Usi",
 		$out["out"],
 		$m
 	)) {
 		$photoUrl = fe($m[1]);
-		$out = $fb->go("https://mobile.facebook.com/{$photoUrl}");
+		$out = $fb->go("https://m.facebook.com/{$photoUrl}", [CURLOPT_FOLLOWLOCATION=>true]);
 		$out["out"] = gzdecode($out["out"]);
 
 		if (preg_match(
@@ -244,9 +258,29 @@ try {
 		}
 	}
 
+	$out = $fb->go("https://m.facebook.com/{$user_}/about", [CURLOPT_FOLLOWLOCATION=>true]);
+	$out = gzdecode($out["out"]);
+
+	/**
+	 * Get extended info.
+	 */
+	if (preg_match(
+		"/(?:<div id=\"work\">)(.+)(?:<div id=)/Usi",
+		$out["out"],
+		$m
+	)) {
+		
+	}
+	
+
 	print json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 } catch (FphpException $e) {
-	echo "Error: ". $e->getMessage()."\n";
+	print json_encode(
+		[
+			"error" => $e->getMessage()
+		],
+		 JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+	);
 	exit(1);
 }
