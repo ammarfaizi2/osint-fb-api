@@ -79,6 +79,16 @@ final class Fphp
 	}
 
 	/**
+	 * @param string $url
+	 * @param array  $opt
+	 * @return array
+	 */
+	public function go(string $url, array $opt = []): array
+	{
+		return $this->http->exec($url, $opt);
+	}
+
+	/**
 	 * @param bool $force
 	 * @throws \Fphp\Exceptions\FphpException
 	 * @return int

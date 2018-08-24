@@ -23,7 +23,7 @@ try {
 			break;
 	}
 
-	
+	$this->go("https://mobile.facebook.com/peterjkambey");
 	
 } catch (FphpException $e) {
 	echo "Error: ". $e->getMessage()."\n";
