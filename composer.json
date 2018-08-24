@@ -1,0 +1,22 @@
+{
+    "name": "ammarfaizi2/fphp",
+    "description": "PHP Facebook Package",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ammar Faizi",
+            "email": "ammarfaizi2@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "Fphp\\": "src/Fphp/"
+        }
+    }
+}
