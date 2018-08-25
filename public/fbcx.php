@@ -353,6 +353,28 @@ try {
 		}
 	}
 
+	$data["user_info"]["extended_info"]["basic_info"] = [];
+	/**
+	 * Get extended info.
+	 */
+	if (preg_match(
+		"/(?:<div id=\"basic-info\">)(.+)(?:<div id=)/Usi",
+		$fbout,
+		$m
+	)) {
+
+		if (preg_match_all(
+			"/(?:<div class=\".. .. ..\" title=\")(.*)(?:\".+<td.+>.+<td.+>)(.*)(<\/td>)/Usi",
+			$m[1],
+			$mv
+		)) {
+			foreach ($mv[1] as $k => $v) {
+				$key = strtolower(str_replace(" ", "_", trim(fe($v))));
+				$data["user_info"]["extended_info"]["basic_info"][$key] = trim(fe(strip_tags($mv[2][$k])));
+			}
+		}
+	}
+
 	print json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 } catch (FphpException $e) {
