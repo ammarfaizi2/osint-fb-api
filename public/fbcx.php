@@ -20,23 +20,23 @@ try {
 	];
 
 	$fb = new Fphp($email, $pass, $cookieFile);
-	// $login = $fb->login();
+	$login = $fb->login();
 
-	// switch ($login) {
-	// 	case Fphp::LOGIN_SUCCESS:
-	// 		// echo "Login success!\n";
-	// 		break;
-	// 	case Fphp::LOGIN_FAILED:
-	// 		echo "Login failed\n";
-	// 	case Fphp::LOGIN_CHECKPOINT:
-	// 		echo "Checkpoint!\n";
-	// 	default:
-	// 		exit(1);
-	// 		break;
-	// }
+	switch ($login) {
+		case Fphp::LOGIN_SUCCESS:
+			// echo "Login success!\n";
+			break;
+		case Fphp::LOGIN_FAILED:
+			echo "Login failed\n";
+		case Fphp::LOGIN_CHECKPOINT:
+			echo "Checkpoint!\n";
+		default:
+			exit(1);
+			break;
+	}
 
 	$out = $fb->go("https://m.facebook.com/{$user_}?v=timeline", [CURLOPT_FOLLOWLOCATION => true]);
-	$out["out"] = gzdecode($out["out"]);
+	$fbout = gzdecode($out["out"]);
 	
 	$url = explode("?", $out["info"]["url"], 2);
 	$url = str_replace(["https://mobile.", "https://m."], "https://www.", $url[0]);
@@ -50,7 +50,7 @@ try {
 	 */
 	if (preg_match(
 		"/(?:<title>)(.*)(?:<\/title>)/Usi",
-		$out["out"],
+		$fbout,
 		$m
 	)) {
 		$data["user_info"]["name"] = trim(fe($m[1]));
@@ -61,7 +61,7 @@ try {
 	 */
 	if (preg_match_all(
 		"/(?:<table class=\"ba\" role=\"presentation\">)(.+)(?:<abbr>)/Usi",
-		$out["out"],
+		$fbout,
 		$m
 	)) {
 		foreach ($m[1] as $k => $mv) {
@@ -242,7 +242,7 @@ try {
 	 */
 	if (preg_match(
 		"/(?: width=\"320\" height=\"200\".+<a href=\")(.*)(?:\")/Usi",
-		$out["out"],
+		$fbout,
 		$m
 	)) {
 		$photoUrl = fe($m[1]);
@@ -259,19 +259,99 @@ try {
 	}
 
 	$out = $fb->go("https://m.facebook.com/{$user_}/about", [CURLOPT_FOLLOWLOCATION=>true]);
-	$out = gzdecode($out["out"]);
+	$fbout = gzdecode($out["out"]);
 
+	/**
+	 * Get profile picture.
+	 */
+	if (!isset($data["user_info"]["profile_picture"]) && preg_match(
+		"/(?: width=\"320\" height=\"200\".+<a href=\")(.*)(?:\")/Usi",
+		$fbout,
+		$m
+	)) {
+		$photoUrl = fe($m[1]);
+		$out = $fb->go("https://m.facebook.com/{$photoUrl}", [CURLOPT_FOLLOWLOCATION=>true]);
+		$out["out"] = gzdecode($out["out"]);
+
+		if (preg_match(
+			"/(?:src=\")([^\"]+scontent[^\"]+)(?:\")/Usi",
+			$out["out"],
+			$m
+		)) {
+			$data["user_info"]["profile_picture"] = trim(fe($m[1]));
+		}
+	}
+
+
+	$prr = ["work", "education"];
+
+	foreach ($prr as $pgr) {
+		$data["user_info"]["extended_info"][$pgr] = [];
+		/**
+		 * Get extended info.
+		 */
+		if (preg_match(
+			"/(?:<div id=\"{$pgr}\">)(.+)(?:<div id=)/Usi",
+			$fbout,
+			$m
+		)) {
+			if (preg_match_all(
+				"/(?:<span class=\".. .. .. ..\"><a.+>)(.*)(?:<\/a>)/Usi",
+				$m[1],
+				$mv
+			)) {
+				foreach ($mv[1] as $vpgr) {
+					$data["user_info"]["extended_info"][$pgr][] = trim(fe($vpgr));
+				}
+			}
+		}
+	}
+
+	$data["user_info"]["extended_info"]["living"] = [];
 	/**
 	 * Get extended info.
 	 */
 	if (preg_match(
-		"/(?:<div id=\"work\">)(.+)(?:<div id=)/Usi",
-		$out["out"],
+		"/(?:<div id=\"living\">)(.+)(?:<div id=)/Usi",
+		$fbout,
 		$m
 	)) {
-		
+		if (preg_match_all(
+			"/(?:<div class=\".. ..\" title=\")(.*)(?:\".+<div.+<a.+>)(.*)(<\/a>)/Usi",
+			$m[1],
+			$mv
+		)) {
+			foreach ($mv[1] as $k => $v) {
+				$data["user_info"]["extended_info"]["living"][strtolower(str_replace(" ", "_", trim(fe($v))))] = trim(fe($mv[2][$k]));
+			}
+		}
 	}
-	
+
+	$data["user_info"]["extended_info"]["contact_info"] = [];
+	/**
+	 * Get extended info.
+	 */
+	if (preg_match(
+		"/(?:<div id=\"contact-info\">)(.+)(?:<div id=)/Usi",
+		$fbout,
+		$m
+	)) {
+
+		if (preg_match_all(
+			"/(?:<div class=\".. .. ..\" title=\")(.*)(?:\".+<td.+>.+<td.+>)(.*)(<\/td>)/Usi",
+			$m[1],
+			$mv
+		)) {
+			foreach ($mv[1] as $k => $v) {
+				$key = strtolower(str_replace(" ", "_", trim(fe($v))));
+				if (in_array($key, ["websites", "email", "address", "phone"])) {
+					$data["user_info"]["extended_info"]["contact_info"][$key][] = trim(fe(strip_tags($mv[2][$k])));
+				} else {
+					$data["user_info"]["extended_info"]["contact_info"][$key] = trim(fe(strip_tags($mv[2][$k])));
+				}
+			}
+		}
+	}
 
 	print json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
