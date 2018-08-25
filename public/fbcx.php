@@ -6,8 +6,15 @@ require __DIR__."/../credential.tmp";
 use Fphp\Fphp;
 use Fphp\Exceptions\FphpException;
 
+header("Content-Type: application/json");
+
+if (! isset($_GET["user"])) {
+	print json_encode(["error" => "\"user\" parameter must be provided!"]);
+	exit();
+}
+
 try {
-	$user_ = "ammarfaizi2";
+	$user_ = $_GET["user"];
 
 	$data = [
 		"user_info" => [
