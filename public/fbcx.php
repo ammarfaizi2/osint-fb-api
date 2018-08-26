@@ -67,7 +67,7 @@ try {
 	 * Get posts.
 	 */
 	if (preg_match_all(
-		"/(?:<table class=\"..\" role=\"presentation\">)(.+)(?:<abbr>)/Usi",
+		"/(?:<table class=\".{1,2}\" role=\"presentation\">)(.+)(?:<abbr>)/Usi",
 		$fbout,
 		$m
 	)) {
