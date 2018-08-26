@@ -6,7 +6,7 @@ require __DIR__."/../credential.tmp";
 use Fphp\Fphp;
 use Fphp\Exceptions\FphpException;
 
-# header("Content-Type: application/json");
+header("Content-Type: application/json");
 
 if (! isset($_GET["user"])) {
 	print json_encode(["error" => "\"user\" parameter must be provided!"]);
@@ -42,20 +42,20 @@ try {
 	];
 
 	$fb = new Fphp($email, $pass, $cookieFile);
-	// $login = $fb->login();
+	$login = $fb->login();
 
-	// switch ($login) {
-	// 	case Fphp::LOGIN_SUCCESS:
-	// 		// echo "Login success!\n";
-	// 		break;
-	// 	case Fphp::LOGIN_FAILED:
-	// 		echo "Login failed\n";
-	// 	case Fphp::LOGIN_CHECKPOINT:
-	// 		echo "Checkpoint!\n";
-	// 	default:
-	// 		exit(1);
-	// 		break;
-	// }
+	switch ($login) {
+		case Fphp::LOGIN_SUCCESS:
+			// echo "Login success!\n";
+			break;
+		case Fphp::LOGIN_FAILED:
+			echo "Login failed\n";
+		case Fphp::LOGIN_CHECKPOINT:
+			echo "Checkpoint!\n";
+		default:
+			exit(1);
+			break;
+	}
 
 	$out = $fb->go("https://m.facebook.com/{$user_}?v=timeline", [CURLOPT_FOLLOWLOCATION => true]);
 	$fbout = gzdecode($out["out"]);
