@@ -67,14 +67,14 @@ try {
 	 * Get posts.
 	 */
 	if (preg_match_all(
-		"/(?:<table class=\"ba\" role=\"presentation\">)(.+)(?:<abbr>)/Usi",
+		"/(?:<table class=\"..\" role=\"presentation\">)(.+)(?:<abbr>)/Usi",
 		$fbout,
 		$m
 	)) {
 		foreach ($m[1] as $k => $mv) {
 
 			if ($k === 0) {
-				$mv = explode("<table class=\"ba\" role=\"presentation\">", $mv);
+				$mv = explode("<table class=\"..\" role=\"presentation\">", $mv);
 				if (count($mv) > 1) {
 					$mv = end($mv);
 				} else {
