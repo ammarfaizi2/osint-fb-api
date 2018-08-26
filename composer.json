@@ -16,6 +16,7 @@
             "src/helpers.php"
         ],
         "psr-4": {
+            "App\\": "app/",
             "Fphp\\": "src/Fphp/"
         }
     }

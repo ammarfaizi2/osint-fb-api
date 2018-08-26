@@ -184,6 +184,11 @@ final class Fphp
 		throw new FphpException("Coult not find the login form");
 	}
 
+	public function getUserInfo()
+	{
+		
+	}
+
 	/**
 	 * @return void
 	 */
