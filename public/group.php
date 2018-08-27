@@ -9,12 +9,12 @@ use Fphp\Exceptions\FphpException;
 header("Content-Type: application/json");
 
 if (! isset($_GET["id"])) {
-	print json_encode(["error" => "\"group\" parameter must be provided!"]);
+	print json_encode(["error" => "\"id\" parameter must be provided!"]);
 	exit(1);
 }
 
 if (! is_string($_GET["id"])) {
-	print json_encode(["error" => "\"group\" parameter must be a string!"]);
+	print json_encode(["error" => "\"id\" parameter must be a string!"]);
 	exit(1);
 }
 
