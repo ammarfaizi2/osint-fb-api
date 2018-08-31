@@ -79,6 +79,20 @@ try {
 		$data["user_info"]["name"] = trim(fe($m[1]));
 	}
 
+	if (in_array($data["user_info"]["name"], [
+		"Page Not Found",
+		"Content not found",
+		null
+	])) {
+		print json_encode(
+			[
+				"error" => 404,
+				"message" => "Not Found"
+			]
+		);
+		exit(1);
+	}
+
 	/**
 	 * Get profile picture.
 	 */
