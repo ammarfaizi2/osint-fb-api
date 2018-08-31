@@ -1,0 +1,24 @@
+# Scrape User Info + User Post
+Parameter:
+1. "user" (bisa diisi user_id maupun username) **required**
+2. "end_page" (jumlah halaman post yang discrape, default value = 3) optional
+
+Contoh:
+http://jembatan.ammarfaizi.net:1324/fbcx.php?user=ammarfaizi2
+http://jembatan.ammarfaizi.net:1324/fbcx.php?user=ammarfaizi2&end_page=10
+
+http://jembatan.ammarfaizi.net:1324/fbcx.php?user=100000590125569
+http://jembatan.ammarfaizi.net:1324/fbcx.php?user=100000590125569&end_page=10
+
+
+
+
+
+
+# Scrape Group Post
+Parameter:
+1. "id" (ID group) **required**
+
+Contoh:
+http://jembatan.ammarfaizi.net:1324/group.php?id=362603284210666
+

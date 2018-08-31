@@ -36,7 +36,35 @@ try {
 			"name" => null,
 			"profile_picture" => null,
 			"profile_url" => null,
-			"extended_info" => []
+			"extended_info" => [
+				"work" => [],
+				"education" => [],
+				"living" => [],
+				"contact_info" => [
+					"mobile" => [],
+					"address" => [],
+					"mobile" => null,
+					"address" => [],
+					"facebook" => null,
+					"github" => null,
+					"youtube" => null,
+					"yahoo!_messenger" => null,
+					"line" => null,
+					"bbm" => null,
+					"instagram" => null,
+					"twitter" => null,
+					"websites" => [],
+					"email" => [],
+				],
+				"basic_info" => [
+					"birthday" => null,
+					"gender" => null,
+					"interested_in" => null,
+					"languages" => null,
+					"religious_views" => null,
+					"political_views" => null,
+				]
+			]
 		],
 		"user_posts" => []
 	];
@@ -62,6 +90,7 @@ try {
 	//$fbout = file_get_contents("a.tmp");
 	
 	$url = explode("?", $out["info"]["url"], 2);
+	$realurl = $url[0];
 	$url = str_replace(["https://mobile.", "https://m."], "https://www.", $url[0]);
 	$data["user_info"]["profile_url"] = $url;
 	
@@ -322,7 +351,7 @@ try {
 		unset($tmp, $mv, $text, $fbid, $h3, $out, $photoUrl, $caption, $alt);
 	}
 
-	$out = $fb->go("https://m.facebook.com/{$user_}/about", [CURLOPT_FOLLOWLOCATION=>true]);
+	$out = $fb->go("{$realurl}/about", [CURLOPT_FOLLOWLOCATION=>true]);
 	$fbout = gzdecode($out["out"]);
 
 	/**
@@ -350,7 +379,6 @@ try {
 	$prr = ["work", "education"];
 
 	foreach ($prr as $pgr) {
-		$data["user_info"]["extended_info"][$pgr] = [];
 		/**
 		 * Get extended info.
 		 */
@@ -391,7 +419,6 @@ try {
 		}
 	}
 
-	$data["user_info"]["extended_info"]["contact_info"] = [];
 	/**
 	 * Get extended info.
 	 */
@@ -417,7 +444,6 @@ try {
 		}
 	}
 
-	$data["user_info"]["extended_info"]["basic_info"] = [];
 	/**
 	 * Get extended info.
 	 */
