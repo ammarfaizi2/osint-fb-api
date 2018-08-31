@@ -55,15 +55,15 @@ try {
 					"twitter" => null,
 					"websites" => [],
 					"email" => [],
+				],
+				"basic_info" => [
+					"birthday" => null,
+					"gender" => null,
+					"interested_in" => null,
+					"languages" => null,
+					"religious_views" => null,
+					"political_views" => null,
 				]
-			],
-			"basic_info" => [
-				"birthday" => null,
-				"gender" => null,
-				"interested_in" => null,
-				"languages" => null,
-				"religious_views" => null,
-				"political_views" => null,
 			]
 		],
 		"user_posts" => []
