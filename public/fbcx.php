@@ -90,6 +90,7 @@ try {
 	//$fbout = file_get_contents("a.tmp");
 	
 	$url = explode("?", $out["info"]["url"], 2);
+	$realurl = $url[0];
 	$url = str_replace(["https://mobile.", "https://m."], "https://www.", $url[0]);
 	$data["user_info"]["profile_url"] = $url;
 	
@@ -336,7 +337,7 @@ try {
 		unset($tmp, $mv, $text, $fbid, $h3, $out, $photoUrl, $caption, $alt);
 	}
 
-	$out = $fb->go("https://m.facebook.com/{$user_}/about", [CURLOPT_FOLLOWLOCATION=>true]);
+	$out = $fb->go("{$realurl}/about", [CURLOPT_FOLLOWLOCATION=>true]);
 	$fbout = gzdecode($out["out"]);
 
 	/**
