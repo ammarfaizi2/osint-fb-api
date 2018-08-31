@@ -198,10 +198,11 @@ try {
 						"/href=\"\/video_redirect/", 
 						$mv
 					) && preg_match(
-						"/<img.+scontent.+>/Usi",
+						"/href=\"\/video_redirect.+<img.+scontent.+>/Usi",
 						$mv,
 						$mc
 					)) {
+											
 						$fbid = $alt = $photoUrl = $caption = null;
 
 						if (preg_match(
