@@ -365,7 +365,6 @@ try {
 	$prr = ["work", "education"];
 
 	foreach ($prr as $pgr) {
-		$data["user_info"]["extended_info"][$pgr] = [];
 		/**
 		 * Get extended info.
 		 */
@@ -406,7 +405,6 @@ try {
 		}
 	}
 
-	$data["user_info"]["extended_info"]["contact_info"] = [];
 	/**
 	 * Get extended info.
 	 */
@@ -432,7 +430,6 @@ try {
 		}
 	}
 
-	$data["user_info"]["extended_info"]["basic_info"] = [];
 	/**
 	 * Get extended info.
 	 */
