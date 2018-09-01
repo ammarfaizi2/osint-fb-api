@@ -248,7 +248,7 @@ try {
 							"story_fbid" => $fbid,
 							"type" => "video",
 							"title" => $h3,
-							"thumnail_url" => $photoUrl,
+							"thumbnail_url" => $photoUrl,
 							"caption" => $caption,
 							"alt_predict" => $alt,
 							"abbr_time" => $postedTime
