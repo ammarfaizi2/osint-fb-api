@@ -39,6 +39,10 @@ final class Fphp
 	private $http;
 
 	/**
+	 * @var \Fphp\Utils
+	 */
+
+	/**
 	 * @param string $email
 	 * @param string $pass
 	 * @param string $cookieFile
@@ -76,6 +80,9 @@ final class Fphp
 				]
 			]
 		);
+
+
+		$this->utils = new Utils($this);
 	}
 
 	/**
